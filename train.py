@@ -1,7 +1,6 @@
 import torch
 import torch.nn as nn
 import wandb
-import torch_xla.core.xla_model as xm
 from tqdm import tqdm
 
 from data import MultiTaskDataBuilder, MultiTaskBatchSampler
@@ -10,7 +9,7 @@ from loss import UncertaintyLoss
 
 def train_mtl_model(epochs=3, lr=2e-4):
     # 1. Hardware & Environment Setup
-    device = xm.xla_device()
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"Running on device: {device}")
     
     wandb.init(project="deberta-multitask-learning", name="tpu-lora-run-1")
@@ -73,7 +72,7 @@ def train_mtl_model(epochs=3, lr=2e-4):
             # Step E: Backward Pass & TPU Optimization
             weighted_loss.backward()
             torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
-            xm.optimizer_step(optimizer)
+            optimizer.step() # Standard PyTorch step
 
             # Step F: MLOps Logging
             if step % 50 == 0:

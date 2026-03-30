@@ -1,5 +1,5 @@
-torch>=2.0.0
-torch-xla>=2.0.0
+torch==2.9.0
+torch_xla[tpu]==2.9.0
 transformers>=4.30.0
 datasets>=2.14.0
 peft>=0.5.0

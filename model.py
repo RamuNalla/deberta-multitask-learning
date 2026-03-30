@@ -38,6 +38,11 @@ class DebertaMultiTaskModel(nn.Module):
         # Pass data through the shared LoRA-adapted encoder
         outputs = self.encoder(input_ids=input_ids, attention_mask=attention_mask)
         sequence_output = outputs.last_hidden_state 
+        
+        # --- THE FIX: Align the dtypes ---
+        # Cast the 16-bit backbone output to 32-bit to match our custom Linear heads
+        sequence_output = sequence_output.to(torch.float32)
+        
         sequence_output = self.dropout(sequence_output)
 
         # Route the tensor to the correct head based on the task

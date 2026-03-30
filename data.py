@@ -50,7 +50,7 @@ class MultiTaskDataBuilder:
         intent.set_format(type="torch", columns=["input_ids", "attention_mask", "label"])
 
         # 3. POS / NER Tagging (CoNLL-2003)
-        conll = load_dataset("conll2003")
+        conll = load_dataset("lhoestq/conll2003")
         conll = conll.map(lambda x: self._tokenize_and_pad(x, "tokens", True), batched=True)
         conll.set_format(type="torch", columns=["input_ids", "attention_mask", "labels"])
 
